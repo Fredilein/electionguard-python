@@ -137,3 +137,5 @@ coverage/
 cov.xml
 
 .DS_Store
+
+.vim

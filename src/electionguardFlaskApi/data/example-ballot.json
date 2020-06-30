@@ -1,0 +1,26 @@
+{
+    "ballot": {
+	    "objectId": "some-ballot-id",
+	    "ballotStyle": "jefferson-county-ballot-style",
+	    "contests": [
+	        {
+	            "objectId": "justice-supreme-court",
+	            "ballotSelections": [
+	                {
+	                    "objectId": "john-adams-selection",
+	                    "plaintext": "True"
+	                },
+	                {
+	                    "objectId": "benjamin-franklin-selection",
+	                    "plaintext": "False"
+	                },
+	                {
+	                    "objectId": "john-hancock-selection",
+	                    "plaintext": "False"
+	                }
+	            ]
+	        }
+	    ]
+	}
+
+}

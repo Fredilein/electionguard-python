@@ -18,6 +18,8 @@ hypothesis = "==5.15.1"
 numpy = '==1.18.2'
 typish = '*'
 jsons = '==1.1.2'
+flask = '*'
+flask-cors = '*'
 
 [requires]
 python_version = "3.8"
