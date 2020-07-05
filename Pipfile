@@ -7,15 +7,17 @@ verify_ssl = true
 black = "*"
 coverage = "*"
 docutils = "*"
+mkdocs = "*"
 mypy = "*"
+pydeps = "*"
+pydocstyle = "*"
 pylint = "*"
 pytest = "*"
-pydocstyle = "*"
-mkdocs = "*"
 
 [packages]
 hypothesis = "==5.15.1"
 numpy = '==1.18.2'
+jsons = '==1.1.2'
 typish = '*'
 jsons = '==1.1.2'
 flask = '*'
