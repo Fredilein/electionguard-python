@@ -1,45 +1,49 @@
 from flask import Flask, request, jsonify, Response, json
 from flask_cors import CORS
 
-from electionguardFlaskApi.election_api import ElectionApi
+from electionguardFlaskApi.election_controller import ElectionController
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-
-election: ElectionApi = ElectionApi()
+electionController: ElectionController = ElectionController()
 
 
 @app.route('/')
 def hello_world():
-    return '<h1>ElectionGuard Python Flask API</h1>'
+    return jsonify({
+        'success': 1,
+        'msg': 'Election created'
+    })
 
 
-@app.route('/electionguard/CreateElection')
-def request_create_election():
-    return election.create_election()
+@app.route('/<election_id>/CreateElection')
+def request_create_election(election_id):
+    return jsonify(electionController.create_election(election_id))
 
 
-@app.route('/electionguard/EncryptBallot', methods=['POST'])
-def request_encrypt_ballot():
+@app.route('/<election_id>/EncryptBallot', methods=['POST'])
+def request_encrypt_ballot(election_id):
     data = request.json
-    return jsonify(election.encrypt_ballot(data))
+    return jsonify(electionController.encrypt_ballot(election_id, data))
 
 
-@app.route('/electionguard/CastBallot/<ballot_id>')
-def request_cast_ballot(ballot_id):
-    return election.cast_spoil_ballot(ballot_id, do_cast=True)
+@app.route('/<election_id>/CastBallot', methods=['POST'])
+def request_cast_ballot(election_id):
+    data = request.json
+    return jsonify(electionController.cast_spoil_ballot(election_id, data, do_cast=True))
 
 
-@app.route('/electionguard/SpoilBallot/<ballot_id>')
-def request_spoil_ballot(ballot_id):
-    return election.cast_spoil_ballot(ballot_id, do_cast=False)
+@app.route('/<election_id>/SpoilBallot')
+def request_spoil_ballot(election_id):
+    data = request.json
+    return jsonify(electionController.cast_spoil_ballot(election_id, data, do_cast=False))
 
 
-@app.route('/electionguard/Tally')
-def request_tally():
-    return election.tally()
+@app.route('/<election_id>/Tally')
+def request_tally(election_id):
+    return jsonify(electionController.create_tally(election_id))
 
 
 if __name__ == '__main__':
