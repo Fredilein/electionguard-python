@@ -13,10 +13,8 @@ from electionguard.ballot_store import BallotStore
 from electionguard.tally import CiphertextTally, tally_ballots
 
 """
-Helper class for holding a quick election. The functions mainly correspond
+Helper functions for holding a quick election. The functions mainly correspond
 to the flask_app endpoints.
-
-TODO: Make return values consistent, probably as JSON including a status code
 """
 
 
@@ -66,7 +64,8 @@ def encrypt(ballot_as_dict: dict, encrypter: EncryptionMediator) -> CiphertextBa
     """
     The ballot gets encrypted and stored in the ballots_encrypted field for the
     cast/spoil decision later.
-    :param data: Ballot in JSON format, see data/example-ballot.json for a reference
+    :param encrypter:
+    :param ballot_as_dict:
     :return: the tracker code of the ballot
     """
     ballot: PlaintextBallot = ballot_from_json(ballot_as_dict)
@@ -77,9 +76,13 @@ def encrypt(ballot_as_dict: dict, encrypter: EncryptionMediator) -> CiphertextBa
     return encrypted_ballot
 
 
-def cast_spoil(ballot_id: str, do_cast: bool, ballots_encrypted: List, ballot_box: BallotBox, store: BallotStore,
+def cast_spoil(ballot_id: str, do_cast: bool, ballots_encrypted: List, store: BallotStore,
                metadata: InternalElectionDescription, context: CiphertextElectionContext) -> (bool, BallotStore):
     """
+    :param context:
+    :param metadata:
+    :param store:
+    :param ballots_encrypted:
     :param ballot_id:
     :param do_cast: cast ballot if true, spoil otherwise (improvable...)
     :return: Response message string
@@ -139,10 +142,10 @@ def ballot_from_json(ballot: dict) -> PlaintextBallot:
 
 
 def _decrypt_with_secret(
-        tally: CiphertextTally, secret_key: ElementModQ
+        ciphertext_tally: CiphertextTally, secret_key: ElementModQ
 ) -> Dict[str, int]:
     plaintext_selections: Dict[str, int] = {}
-    for _, contest in tally.cast.items():
+    for _, contest in ciphertext_tally.cast.items():
         for object_id, selection in contest.tally_selections.items():
             plaintext = selection.message.decrypt(secret_key)
             plaintext_selections[object_id] = plaintext

@@ -15,6 +15,16 @@ STORE = '/store.obj'
 BALLOTS_ENCRYPTED = '/ballots_encrypted.obj'
 KEYPAIR = '/keypair.obj'
 
+"""
+ElectionController mainly handles loading and storing of data and then calling the desired function in election.py
+with this data.
+
+I don't know if it makes sense to make ElectionController a class.
+A possible advantage could be to store the base path for stored election data in a field. There might be more
+parameters to store this way in the future...
+I did it this way to make it more obvious that the flask app only calls functions from the controller.
+"""
+
 class ElectionController:
 
     def __init__(self) -> None:
@@ -69,7 +79,7 @@ class ElectionController:
         metadata = pickle.load(open(election_path + METADATA, 'rb'))
         context = pickle.load(open(election_path + CONTEXT, 'rb'))
 
-        (res, store_new) = cast_spoil(data['ballotId'], do_cast, ballots_encrypted, ballot_box, store, metadata, context)
+        (res, store_new) = cast_spoil(data['ballotId'], do_cast, ballots_encrypted, store, metadata, context)
         pickle.dump(store_new, open(election_path + STORE, 'wb'))
 
         msg_end = 'cast' if do_cast else 'spoiled'
