@@ -1,0 +1,121 @@
+{
+	"info": {
+		"_postman_id": "d27c5534-7daa-422b-a6b1-d0853d76bed4",
+		"name": "ElectionGuard Python API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Test API",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000",
+					"host": [
+						"localhost"
+					],
+					"port": "5000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Election",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/electionguard/CreateElection",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"electionguard",
+						"CreateElection"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Encrypt Ballot",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ballot\": {\n\t    \"objectId\": \"some-external-id-string-123\",\n\t    \"ballotStyle\": \"jefferson-county-ballot-style\",\n\t    \"contests\": [\n\t        {\n\t            \"objectId\": \"justice-supreme-court\",\n\t            \"ballotSelections\": [\n\t                {\n\t                    \"objectId\": \"john-adams-selection\",\n\t                    \"plaintext\": \"True\"\n\t                },\n\t                {\n\t                    \"objectId\": \"benjamin-franklin-selection\",\n\t                    \"plaintext\": \"False\"\n\t                },\n\t                {\n\t                    \"objectId\": \"john-hancock-selection\",\n\t                    \"plaintext\": \"False\"\n\t                }\n\t            ]\n\t        }\n\t    ]\n\t}\n\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/electionguard/EncryptBallot",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"electionguard",
+						"EncryptBallot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cast Ballot",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ballotId\": \"some-external-id-string-123\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5000/{{election_id}}/CastBallot",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"{{election_id}}",
+						"CastBallot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tally",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5000/{{election_id}}/Tally",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"{{election_id}}",
+						"Tally"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
