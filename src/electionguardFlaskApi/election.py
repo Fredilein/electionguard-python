@@ -66,7 +66,7 @@ def encrypt(ballot_as_dict: dict, encrypter: EncryptionMediator) -> CiphertextBa
     cast/spoil decision later.
     :param encrypter:
     :param ballot_as_dict:
-    :return: the tracker code of the ballot
+    :return:
     """
     ballot: PlaintextBallot = ballot_from_json(ballot_as_dict)
 
@@ -84,8 +84,8 @@ def cast_spoil(ballot_id: str, do_cast: bool, ballots_encrypted: List, store: Ba
     :param store:
     :param ballots_encrypted:
     :param ballot_id:
-    :param do_cast: cast ballot if true, spoil otherwise (improvable...)
-    :return: Response message string
+    :param do_cast: cast ballot if true, spoil otherwise (could be cleaner...)
+    :return: Status code and the new store. store gets modified in accept_ballot without being explicitly returned
     """
     # Search for the ballot with ballot_id in ballots_encrypted
     ballot = next((b for b in ballots_encrypted if b.object_id == ballot_id), None)
@@ -119,7 +119,7 @@ def ballot_from_json(ballot: dict) -> PlaintextBallot:
     if voted for him or not. See data/example-ballot.json
     """
     # TODO: Ballot validation
-    # TODO: Allow style of example ballots
+    # TODO: Allow style of example ballots (only yes-votes contained in ballot dict)
 
     voted_contests: List[PlaintextBallotContest] = []
     for contest in ballot['contests']:

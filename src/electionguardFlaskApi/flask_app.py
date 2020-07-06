@@ -7,7 +7,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-electionController: ElectionController = ElectionController()
+electionController: ElectionController = ElectionController('./data/')
 
 
 @app.route('/')
@@ -35,7 +35,7 @@ def request_cast_ballot(election_id):
     return jsonify(electionController.cast_spoil_ballot(election_id, data, do_cast=True))
 
 
-@app.route('/<election_id>/SpoilBallot')
+@app.route('/<election_id>/SpoilBallot', methods=['POST'])
 def request_spoil_ballot(election_id):
     data = request.json
     return jsonify(electionController.cast_spoil_ballot(election_id, data, do_cast=False))

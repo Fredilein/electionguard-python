@@ -20,18 +20,20 @@ ElectionController mainly handles loading and storing of data and then calling t
 with this data.
 
 I don't know if it makes sense to make ElectionController a class.
-A possible advantage could be to store the base path for stored election data in a field. There might be more
-parameters to store this way in the future...
 I did it this way to make it more obvious that the flask app only calls functions from the controller.
 """
 
 class ElectionController:
 
-    def __init__(self) -> None:
+    # Path where all the election data gets stored. Default: ./data/
+    path: str
+
+    def __init__(self, path: str) -> None:
+        self.path = path
         print("Initialized Controller")
 
     def create_election(self, election_id: str) -> dict:
-        election_path: str = './data/' + election_id
+        election_path: str = self.path + election_id
         if os.path.isdir(election_path):
             return {
                 'success': 0,
@@ -56,13 +58,13 @@ class ElectionController:
         }
 
     def encrypt_ballot(self, election_id: str, data: dict) -> dict:
-        election_path: str = './data/' + election_id
+        election_path: str = self.path + election_id
         encrypter = pickle.load(open(election_path + ENCRYPTER, 'rb'))
         ballots_encrypted = pickle.load(open(election_path + BALLOTS_ENCRYPTED, 'rb'))
 
         encrypted_ballot: CiphertextBallot = encrypt(data['ballot'], encrypter)
-
         ballots_encrypted.append(encrypted_ballot)
+
         pickle.dump(ballots_encrypted, open(election_path + BALLOTS_ENCRYPTED, 'wb'))
 
         return {
@@ -72,7 +74,7 @@ class ElectionController:
         }
 
     def cast_spoil_ballot(self, election_id: str, data: dict, do_cast: bool) -> dict:
-        election_path: str = './data/' + election_id
+        election_path: str = self.path + election_id
         ballots_encrypted = pickle.load(open(election_path + BALLOTS_ENCRYPTED, 'rb'))
         ballot_box = pickle.load(open(election_path + BALLOT_BOX, 'rb'))
         store = pickle.load(open(election_path + STORE, 'rb'))
@@ -80,6 +82,7 @@ class ElectionController:
         context = pickle.load(open(election_path + CONTEXT, 'rb'))
 
         (res, store_new) = cast_spoil(data['ballotId'], do_cast, ballots_encrypted, store, metadata, context)
+
         pickle.dump(store_new, open(election_path + STORE, 'wb'))
 
         msg_end = 'cast' if do_cast else 'spoiled'
@@ -95,7 +98,7 @@ class ElectionController:
             }
 
     def create_tally(self, election_id: str):
-        election_path: str = './data/' + election_id
+        election_path: str = self.path + election_id
         store = pickle.load(open(election_path + STORE, 'rb'))
         metadata = pickle.load(open(election_path + METADATA, 'rb'))
         context = pickle.load(open(election_path + CONTEXT, 'rb'))
