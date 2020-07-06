@@ -1,26 +1,38 @@
 {
     "ballot": {
 	    "objectId": "some-ballot-id",
-	    "ballotStyle": "jefferson-county-ballot-style",
+	    "ballotStyle": "example-county-ballot-style",
 	    "contests": [
 	        {
-	            "objectId": "justice-supreme-court",
+	            "objectId": "president-eth",
 	            "ballotSelections": [
 	                {
-	                    "objectId": "john-adams-selection",
+	                    "objectId": "turing-selection",
 	                    "plaintext": "True"
 	                },
 	                {
-	                    "objectId": "benjamin-franklin-selection",
+	                    "objectId": "torvalds-selection",
 	                    "plaintext": "False"
 	                },
 	                {
-	                    "objectId": "john-hancock-selection",
+	                    "objectId": "guido-selection",
 	                    "plaintext": "False"
+	                }
+	            ]
+	        },
+			{
+	            "objectId": "referendum-pineapple",
+	            "ballotSelections": [
+	                {
+	                    "objectId": "referendum-pineapple-affirmative-selection",
+	                    "plaintext": "False"
+	                },
+	                {
+	                    "objectId": "referendum-pineapple-negative-selection",
+	                    "plaintext": "True"
 	                }
 	            ]
 	        }
 	    ]
 	}
-
 }

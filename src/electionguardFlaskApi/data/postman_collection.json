@@ -52,16 +52,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"ballot\": {\n\t    \"objectId\": \"some-external-id-string-123\",\n\t    \"ballotStyle\": \"jefferson-county-ballot-style\",\n\t    \"contests\": [\n\t        {\n\t            \"objectId\": \"justice-supreme-court\",\n\t            \"ballotSelections\": [\n\t                {\n\t                    \"objectId\": \"john-adams-selection\",\n\t                    \"plaintext\": \"True\"\n\t                },\n\t                {\n\t                    \"objectId\": \"benjamin-franklin-selection\",\n\t                    \"plaintext\": \"False\"\n\t                },\n\t                {\n\t                    \"objectId\": \"john-hancock-selection\",\n\t                    \"plaintext\": \"False\"\n\t                }\n\t            ]\n\t        }\n\t    ]\n\t}\n\n}"
+					"raw": "{\n    \"ballot\": {\n\t    \"objectId\": \"some-ballot-id\",\n\t    \"ballotStyle\": \"example-county-ballot-style\",\n\t    \"contests\": [\n\t        {\n\t            \"objectId\": \"president-eth\",\n\t            \"ballotSelections\": [\n\t                {\n\t                    \"objectId\": \"turing-selection\",\n\t                    \"plaintext\": \"True\"\n\t                },\n\t                {\n\t                    \"objectId\": \"torvalds-selection\",\n\t                    \"plaintext\": \"False\"\n\t                },\n\t                {\n\t                    \"objectId\": \"guido-selection\",\n\t                    \"plaintext\": \"False\"\n\t                }\n\t            ]\n\t        },\n\t\t\t{\n\t            \"objectId\": \"referendum-pineapple\",\n\t            \"ballotSelections\": [\n\t                {\n\t                    \"objectId\": \"referendum-pineapple-affirmative-selection\",\n\t                    \"plaintext\": \"False\"\n\t                },\n\t                {\n\t                    \"objectId\": \"referendum-pineapple-negative-selection\",\n\t                    \"plaintext\": \"True\"\n\t                }\n\t            ]\n\t        }\n\t    ]\n\t}\n}"
 				},
 				"url": {
-					"raw": "localhost:5000/electionguard/EncryptBallot",
+					"raw": "localhost:5000/{{election_id}}/EncryptBallot",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"electionguard",
+						"{{election_id}}",
 						"EncryptBallot"
 					]
 				}
@@ -81,7 +81,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"ballotId\": \"some-external-id-string-123\"\n}"
+					"raw": "{\n\t\"ballotId\": \"some-ballot-id\"\n}"
 				},
 				"url": {
 					"raw": "localhost:5000/{{election_id}}/CastBallot",

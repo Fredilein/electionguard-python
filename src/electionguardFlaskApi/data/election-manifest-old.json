@@ -1,8 +1,8 @@
 {
     "geopoliticalUnits": [
         {
-            "objectId": "example-county",
-            "name": "Example County",
+            "objectId": "jefferson-county",
+            "name": "Jefferson County",
             "type": "county",
             "contactInformation": {
                 "addressLine": [
@@ -23,11 +23,83 @@
                     }
                 ]
             }
+        },
+        {
+            "objectId": "harrison-township",
+            "name": "Harrison Township",
+            "type": "township",
+            "contactInformation": {
+                "addressLine": [
+                    "1234 Thorton Drive",
+                    "Harrison, Hamilton 999999"
+                ],
+                "name": "Harrison Town Hall",
+                "email": [
+                    {
+                        "annotation": "inquiries",
+                        "value": "inquiries@harrison.hamilton.state.gov"
+                    }
+                ],
+                "phone": [
+                    {
+                        "annotation": "domestic",
+                        "value": "123-456-7890"
+                    }
+                ]
+            }
+        },
+        {
+            "objectId": "harrison-township-precinct-east",
+            "name": "Harrison Township Precinct",
+            "type": "township",
+            "contactInformation": {
+                "addressLine": [
+                    "1234 Thorton Drive",
+                    "Harrison, Hamilton 999999"
+                ],
+                "name": "Harrison Town Hall",
+                "email": [
+                    {
+                        "annotation": "inquiries",
+                        "value": "inquiries@harrison.hamilton.state.gov"
+                    }
+                ],
+                "phone": [
+                    {
+                        "annotation": "domestic",
+                        "value": "123-456-7890"
+                    }
+                ]
+            }
+        },
+        {
+            "objectId": "rutledge-elementary",
+            "name": "Rutledge Elementary School district",
+            "type": "school",
+            "contactInformation": {
+                "addressLine": [
+                    "1234 Wolcott Parkway",
+                    "Harrison, Hamilton 999999"
+                ],
+                "name": "Rutledge Elementary School",
+                "email": [
+                    {
+                        "annotation": "inquiries",
+                        "value": "inquiries@harrison.hamilton.state.gov"
+                    }
+                ],
+                "phone": [
+                    {
+                        "annotation": "domestic",
+                        "value": "123-456-7890"
+                    }
+                ]
+            }
         }
     ],
     "parties": [
         {
-            "objectId": "example-party",
+            "objectId": "whig",
             "abbreviation": "WHI",
             "color": "AAAAAA",
             "logoUri": "http://some/path/to/whig.svg",
@@ -53,44 +125,74 @@
                     }
                 ]
             }
+        },
+        {
+            "objectId": "democratic-republican",
+            "abbreviation": "DEMREP",
+            "color": "EEEEEE",
+            "logoUri": "http://some/path/to/democratic-repulbican.svg",
+            "name": {
+                "text": [
+                    {
+                        "value": "Democratic Republican Party",
+                        "language": "en"
+                    }
+                ]
+            }
         }
     ],
     "candidates": [
         {
-            "objectId": "turing",
+            "objectId": "benjamin-franklin",
             "ballotName": {
                 "text": [
                     {
-                        "value": "Alan Turing",
+                        "value": "Benjamin Franklin",
                         "language": "en"
                     }
                 ]
             },
-            "partyId": "example-party"
+            "partyId": "whig"
         },
         {
-            "objectId": "torvalds",
+            "objectId": "john-adams",
             "ballotName": {
                 "text": [
                     {
-                        "value": "Linus Torvalds",
+                        "value": "John Adams",
                         "language": "en"
                     }
                 ]
             },
-            "partyId": "example-party"
+            "partyId": "federalist"
         },
         {
-            "objectId": "guido",
+            "objectId": "john-hancock",
             "ballotName": {
                 "text": [
                     {
-                        "value": "Guido Van Rossum",
+                        "value": "John Hancock",
                         "language": "en"
                     }
                 ]
             },
-            "partyId": "example-party"
+            "partyId": "democratic-republican"
+        },
+        {
+            "objectId": "write-in",
+            "ballotName": {
+                "text": [
+                    {
+                        "value": "Write In Candidate",
+                        "language": "en"
+                    },
+                    {
+                        "value": "Escribir en la candidata",
+                        "language": "es"
+                    }
+                ]
+            },
+            "isWriteIn": true
         },
         {
             "objectId": "referendum-pineapple-affirmative",
@@ -118,33 +220,33 @@
     "contests": [
         {
             "@type": "CandidateContest",
-            "objectId": "president-eth",
+            "objectId": "justice-supreme-court",
             "sequenceOrder": 0,
             "ballotSelections": [
                 {
-                    "objectId": "turing-selection",
+                    "objectId": "john-adams-selection",
                     "sequenceOrder": 0,
-                    "candidateId": "turing"
+                    "candidateId": "john-adams"
                 },
                 {
-                    "objectId": "torvalds-selection",
+                    "objectId": "benjamin-franklin-selection",
                     "sequenceOrder": 1,
-                    "candidateId": "torvalds"
+                    "candidateId": "benjamin-franklin"
                 },
                 {
-                    "objectId": "guido-selection",
+                    "objectId": "john-hancock-selection",
                     "sequenceOrder": 2,
-                    "candidateId": "guido"
+                    "candidateId": "john-hancock"
                 }
             ],
             "ballotTitle": {
                 "text": [
                     {
-                        "value": "President ETH Zurich",
+                        "value": "Justice of the Supreme Court",
                         "language": "en"
                     },
                     {
-                        "value": "El Presidente",
+                        "value": "Juez de la corte suprema",
                         "language": "es"
                     }
                 ]
@@ -152,7 +254,7 @@
             "ballotSubtitle": {
                 "text": [
                     {
-                        "value": "Please choose one candidate",
+                        "value": "Please choose up to two candidates",
                         "language": "en"
                     },
                     {
@@ -162,10 +264,11 @@
                 ]
             },
             "voteVariation": "one_of_m",
-            "electoralDistrictId": "example-county",
-            "name": "President ETH Zurich",
+            "electoralDistrictId": "jefferson-county",
+            "name": "Justice of the Supreme Court",
             "primaryPartyIds": [
-                "example-party"
+                "whig",
+                "federalist"
             ],
             "numberElected": 1,
             "votesAllowed": 1
@@ -211,7 +314,7 @@
                 ]
             },
             "voteVariation": "one_of_m",
-            "electoralDistrictId": "example-county",
+            "electoralDistrictId": "harrison-township",
             "name": "The Pineapple Question",
             "numberElected": 1,
             "votesAllowed": 1
@@ -219,16 +322,40 @@
     ],
     "ballotStyles": [
         {
-            "objectId": "example-county-ballot-style",
+            "objectId": "jefferson-county-ballot-style",
             "geopoliticalUnitIds": [
-                "example-county"
+                "jefferson-county"
+            ]
+        },
+        {
+            "objectId": "harrison-township-ballot-style",
+            "geopoliticalUnitIds": [
+                "jefferson-county",
+                "harrison-township"
+            ]
+        },
+        {
+            "objectId": "harrison-township-precinct-east-ballot-style",
+            "geopoliticalUnitIds": [
+                "jefferson-county",
+                "harrison-township",
+                "harrison-township-precinct-east",
+                "rutledge-elementary"
+            ]
+        },
+        {
+            "objectId": "rutledge-elementary-ballot-style",
+            "geopoliticalUnitIds": [
+                "jefferson-county",
+                "harrison-township",
+                "rutledge-elementary"
             ]
         }
     ],
     "name": {
         "text": [
             {
-                "value": "Really important and totally valid election",
+                "value": "Jefferson County Spring Primary",
                 "language": "en"
             },
             {
@@ -266,6 +393,6 @@
     },
     "startDate": "2020-03-01T08:00:00-05:00",
     "endDate": "2020-03-01T20:00:00-05:00",
-    "electionScopeId": "example-primary",
+    "electionScopeId": "jefferson-county-primary",
     "type": "primary"
 }
