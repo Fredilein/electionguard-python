@@ -44,6 +44,7 @@ class ElectionController:
         (metadata, context, encrypter, ballot_box, store, keypair) = create()
         ballots_encrypted: List = []
 
+        # TODO: Close opened files... Maybe automate storing things with pickle
         pickle.dump(metadata, open(election_path + METADATA, 'wb'))
         pickle.dump(context, open(election_path + CONTEXT, 'wb'))
         pickle.dump(encrypter, open(election_path + ENCRYPTER, 'wb'))

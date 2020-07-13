@@ -9,13 +9,15 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 electionController: ElectionController = ElectionController('./data/')
 
+"""
+When calling the tally endpoint, this whole script gets executed 10 times in approximately one second...
+electionController gets constructed each time, verifiable by inserting a print statement here.
+I have no idea why.
+"""
 
 @app.route('/')
 def hello_world():
-    return jsonify({
-        'success': 1,
-        'msg': 'Election created'
-    })
+    return '<h1>Electionguard Python Flask API</h1>'
 
 
 @app.route('/<election_id>/CreateElection')
