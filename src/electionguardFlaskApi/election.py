@@ -1,5 +1,5 @@
 import os
-import pickle
+import json
 
 from typing import List, Dict, Optional, Tuple
 
@@ -17,6 +17,9 @@ Helper functions for holding a quick election. The functions mainly correspond
 to the flask_app endpoints.
 """
 
+# TODO: Allow clients to provide election-manifest.json
+ELECTION_MANIFEST = "data/election-manifest.json"
+
 
 def create() -> Tuple:
     """
@@ -24,8 +27,7 @@ def create() -> Tuple:
     More configuration options and the ability to hold a key ceremony should be added later.
     """
     # Open an election manifest file
-    # TODO: Allow clients to provide election-manifest.json
-    with open(os.path.join("data/election-manifest.json"), "r") as manifest:
+    with open(os.path.join(ELECTION_MANIFEST), "r") as manifest:
         string_representation = manifest.read()
         election_description = ElectionDescription.from_json(string_representation)
 
@@ -114,12 +116,7 @@ def tally(store: BallotStore, metadata: InternalElectionDescription, context: Ci
 
 
 def ballot_from_json(ballot: dict) -> PlaintextBallot:
-    """
-    Every candidate must be in the selection array right now, with the plaintext field indicating
-    if voted for him or not. See data/example-ballot.json
-    """
     # TODO: Ballot validation
-    # TODO: Allow style of example ballots (only yes-votes contained in ballot dict)
 
     voted_contests: List[PlaintextBallotContest] = []
     for contest in ballot['contests']:
