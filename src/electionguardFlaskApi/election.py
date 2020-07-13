@@ -98,7 +98,7 @@ def cast_spoil(ballot_id: str, do_cast: bool, ballots_encrypted: List, store: Ba
         assert (store.get(accepted_ballot.object_id) == accepted_ballot)
         return True, store
     else:
-        accepted_ballot = accept_ballot(ballot, BallotBoxState.SPOIL, metadata, context, store)
+        accepted_ballot = accept_ballot(ballot, BallotBoxState.SPOILED, metadata, context, store)
         assert (store.get(accepted_ballot.object_id) == accepted_ballot)
         return True, store
 
