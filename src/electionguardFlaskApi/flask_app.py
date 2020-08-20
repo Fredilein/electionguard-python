@@ -31,6 +31,12 @@ def request_encrypt_ballot(election_id):
     return jsonify(electionController.encrypt_ballot(election_id, data))
 
 
+@app.route('/<election_id>/EncryptBallotColors', methods=['POST'])
+def request_encrypt_ballot_colors(election_id):
+    data = request.json
+    return jsonify(electionController.encrypt_ballot_colors(election_id, data))
+
+
 @app.route('/<election_id>/CastBallot', methods=['POST'])
 def request_cast_ballot(election_id):
     data = request.json
@@ -46,6 +52,11 @@ def request_spoil_ballot(election_id):
 @app.route('/<election_id>/Tally')
 def request_tally(election_id):
     return jsonify(electionController.create_tally(election_id))
+
+
+@app.route('/listElections')
+def request_list_elections():
+    return jsonify(electionController.list_elections())
 
 
 if __name__ == '__main__':

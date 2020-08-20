@@ -74,6 +74,11 @@ class ElectionController:
             'ballotTracker': encrypted_ballot.get_tracker_code()
         }
 
+    def encrypt_ballot_colors(self, election_id: str, data: dict) -> dict:
+        election_path: str = self.path + election_id
+        encrypter = pickle.load(open(election_path + ENCRYPTER, 'rb'))
+        ballots_encrypted = pickle.load(open(election_path + BALLOTS_ENCRYPTED, 'rb'))
+
     def cast_spoil_ballot(self, election_id: str, data: dict, do_cast: bool) -> dict:
         election_path: str = self.path + election_id
         ballots_encrypted = pickle.load(open(election_path + BALLOTS_ENCRYPTED, 'rb'))
@@ -81,6 +86,8 @@ class ElectionController:
         store = pickle.load(open(election_path + STORE, 'rb'))
         metadata = pickle.load(open(election_path + METADATA, 'rb'))
         context = pickle.load(open(election_path + CONTEXT, 'rb'))
+
+        print(len(ballots_encrypted))
 
         (res, store_new) = cast_spoil(data['ballotId'], do_cast, ballots_encrypted, store, metadata, context)
 
@@ -118,3 +125,18 @@ class ElectionController:
                 'success': 0
             }
 
+    def list_elections(self):
+        base_dir = self.path
+        elections = [d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))]
+
+        if elections:
+            return {
+                'success': 1,
+                'msg': f'{len(elections)} elections found',
+                'elections': elections
+            }
+        else:
+            return {
+                'success': 0,
+                'msg': 'No elections found'
+            }

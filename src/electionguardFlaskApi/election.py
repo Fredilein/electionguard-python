@@ -90,8 +90,9 @@ def cast_spoil(ballot_id: str, do_cast: bool, ballots_encrypted: List, store: Ba
     :return: Status code and the new store. store gets modified in accept_ballot without being explicitly returned
     """
     # Search for the ballot with ballot_id in ballots_encrypted
-    ballot = next((b for b in ballots_encrypted if b.object_id == ballot_id), None)
+    ballot = next((b for b in ballots_encrypted if b.object_id == int(ballot_id)), None)
     if not ballot:
+        print('not ballot')
         return False, store
     if do_cast:
         accepted_ballot = accept_ballot(ballot, BallotBoxState.CAST, metadata, context, store)
