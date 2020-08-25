@@ -3,6 +3,8 @@ import pickle
 import os
 
 from electionguard.ballot import PlaintextBallot, CiphertextBallot
+from electionguard.elgamal import elgamal_encrypt
+
 
 from electionguardFlaskApi.election import *
 
@@ -139,4 +141,42 @@ class ElectionController:
             return {
                 'success': 0,
                 'msg': 'No elections found'
+            }
+
+    def get_publickey(self, election_id: str):
+        election_path: str = self.path + election_id
+        keypair = pickle.load(open(election_path + KEYPAIR, 'rb'))
+
+        res = publickey(keypair)
+        print(keypair.public_key)
+        enc = elgamal_encrypt(0, ElementModQ(10), keypair.public_key)
+
+        if res:
+            return {
+                'success': 1,
+                'msg': 'Valid Public Key found',
+                'pk': str(res),
+                'enc': str(enc)
+            }
+        else:
+            return {
+                'success': 0
+            }
+
+    # TODO: Kind of important to remove later... Just for debugging encryption
+    def get_secretkey(self, election_id: str):
+        election_path: str = self.path + election_id
+        keypair = pickle.load(open(election_path + KEYPAIR, 'rb'))
+
+        res = secretkey(keypair)
+
+        if res:
+            return {
+                'success': 1,
+                'msg': 'Tallied ballots and decrypted result',
+                'sk': str(res)
+            }
+        else:
+            return {
+                'success': 0
             }

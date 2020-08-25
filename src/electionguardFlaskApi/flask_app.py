@@ -54,6 +54,16 @@ def request_tally(election_id):
     return jsonify(electionController.create_tally(election_id))
 
 
+@app.route('/<election_id>/PublicKey')
+def request_pk(election_id):
+    return jsonify(electionController.get_publickey(election_id))
+
+# TODO: REMOOOOOOOVE, only for testing
+@app.route('/<election_id>/SecretKey')
+def request_sk(election_id):
+    return jsonify(electionController.get_secretkey(election_id))
+
+
 @app.route('/listElections')
 def request_list_elections():
     return jsonify(electionController.list_elections())

@@ -160,10 +160,12 @@ def encrypt_selection(
 
     selection_representation = selection.to_int()
 
+    print(selection_representation)
     # Generate the encryption
     elgamal_encryption = elgamal_encrypt(
         selection_representation, selection_nonce, elgamal_public_key
     )
+    print(elgamal_encryption)
 
     if elgamal_encryption is None:
         # will have logged about the failure earlier, so no need to log anything here

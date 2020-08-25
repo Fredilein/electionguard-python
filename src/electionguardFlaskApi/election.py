@@ -116,6 +116,15 @@ def tally(store: BallotStore, metadata: InternalElectionDescription, context: Ci
     return decrypted_tallies
 
 
+def publickey(keypair: ElGamalKeyPair) -> int:
+    return keypair.public_key.to_int()
+
+
+# TODO: Might delete later, idk
+def secretkey(keypair: ElGamalKeyPair) -> int:
+    return keypair.secret_key.to_int()
+
+
 def ballot_from_json(ballot: dict) -> PlaintextBallot:
     # TODO: Ballot validation
 
