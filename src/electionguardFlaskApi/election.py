@@ -2,15 +2,22 @@ import os
 import json
 
 from typing import List, Dict, Optional, Tuple
+from secrets import randbelow
+from gmpy2 import mpz
 
 from electionguard.election import ElectionDescription, InternalElectionDescription, CiphertextElectionContext
 from electionguard.election_builder import ElectionBuilder
-from electionguard.elgamal import ElGamalKeyPair, elgamal_keypair_random, ElementModQ
-from electionguard.ballot import PlaintextBallot, CiphertextBallot, PlaintextBallotContest, PlaintextBallotSelection
-from electionguard.encrypt import EncryptionDevice, EncryptionMediator
+from electionguard.elgamal import ElGamalKeyPair, elgamal_keypair_random, ElementModQ, ElGamalCiphertext
+from electionguard.ballot import PlaintextBallot, CiphertextBallot, CiphertextBallotContest, CiphertextBallotSelection, PlaintextBallotContest, \
+    PlaintextBallotSelection
+from electionguard.encrypt import EncryptionDevice, EncryptionMediator, contest_from
 from electionguard.ballot_box import BallotBox, accept_ballot, BallotBoxState
 from electionguard.ballot_store import BallotStore
 from electionguard.tally import CiphertextTally, tally_ballots
+from electionguard.hash import hash_elems
+from electionguard.nonces import Nonces
+from electionguard.utils import get_optional, get_or_else_optional_func
+from electionguard.group import Q, ElementModP, ElementModQ, int_to_q_unchecked
 
 """
 Helper functions for holding a quick election. The functions mainly correspond
@@ -74,6 +81,97 @@ def encrypt(ballot_as_dict: dict, encrypter: EncryptionMediator) -> CiphertextBa
 
     # Encrypt the ballot
     encrypted_ballot: CiphertextBallot = encrypter.encrypt(ballot)
+
+    return encrypted_ballot
+
+
+def encrypt_colors(ballot_as_dict: dict, election_metadata: InternalElectionDescription,
+                             context: CiphertextElectionContext) -> CiphertextBallot:
+    # Generate a random master nonce to use for the contest and selection nonce's on the ballot
+    # Optional, maybe later.
+    random_master_nonce = get_or_else_optional_func(
+        None, lambda: int_to_q_unchecked(randbelow(Q))
+    )
+
+    # Include a representation of the election and the external Id in the nonce's used
+    # to derive other nonce values on the ballot
+    nonce_seed = hash_elems(
+        context.crypto_extended_base_hash, ballot_as_dict['objectId'], random_master_nonce,
+    )
+
+    encrypted_contests: List[CiphertextBallotContest] = list()
+
+    for contest_description in election_metadata.get_contests_for(ballot_as_dict['ballotStyle']):
+        use_contest = None
+        for contest in ballot_as_dict['contests']:
+            if contest['objectId'] == contest_description.object_id:
+                use_contest = contest
+                break
+        # no selections provided for the contest, so create a placeholder contest
+        if not use_contest:
+            print('no contest')
+            break
+
+        contest_description_hash = contest_description.crypto_hash()
+        nonce_sequence = Nonces(contest_description_hash, nonce_seed)
+        chaum_pedersen_nonce = next(iter(nonce_sequence))
+
+        # Encrypt Selections
+        encrypted_selections: List[CiphertextBallotSelection] = list()
+
+        for selection_description in contest_description.ballot_selections:
+            for selection in use_contest['ballotSelections']:
+                if selection['objectId'] == selection_description.object_id:
+                    # encrypted_selection = encrypt_selection(
+                    #     selection, description, elgamal_public_key, contest_nonce
+                    # )
+                    selection_description_hash = selection_description.crypto_hash()
+                    nonce_sequence = Nonces(selection_description_hash, nonce_seed)
+                    selection_nonce = nonce_sequence[selection_description.sequence_order]
+                    disjunctive_chaum_pedersen_nonce = next(iter(nonce_sequence))
+
+                    elgamal_encryption = ElGamalCiphertext(ElementModP(mpz(int(selection['ciphertext']['a']))), ElementModP(mpz(int(selection['ciphertext']['b']))))
+
+                    encrypted_selection = CiphertextBallotSelection(
+                        object_id=selection['objectId'],
+                        description_hash=selection_description_hash,
+                        message=elgamal_encryption,
+                        elgamal_public_key=context.elgamal_public_key,
+                        proof_seed=disjunctive_chaum_pedersen_nonce,
+                        nonce=selection_nonce,
+                        selection_representation=0,
+                    )
+                    break
+
+            if encrypted_selection is None:
+                print('no encrypted selection')
+                break  # log will have happened earlier
+            encrypted_selections.append(encrypted_selection)
+
+        # Encrypt Contest
+        encrypted_contest = CiphertextBallotContest(
+            object_id=use_contest['objectId'],
+            description_hash=contest_description_hash,
+            ballot_selections=encrypted_selections,
+            elgamal_public_key=context.elgamal_public_key,
+            proof_seed=chaum_pedersen_nonce,
+            number_elected=contest_description.number_elected,
+        )
+
+        if encrypted_contest is None:
+            print('no encrypted contest')
+            break  # log will have happened earlier
+        encrypted_contests.append(encrypted_contest)
+
+    encrypted_ballot = CiphertextBallot(
+        ballot_as_dict['objectId'],
+        ballot_as_dict['ballotStyle'],
+        context.crypto_extended_base_hash,
+        encrypted_contests,
+    )
+
+    # should use seed_hash instead of nonce_seed
+    encrypted_ballot.generate_tracking_id(nonce_seed)
 
     return encrypted_ballot
 
