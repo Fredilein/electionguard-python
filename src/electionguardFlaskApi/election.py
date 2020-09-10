@@ -7,7 +7,7 @@ from gmpy2 import mpz
 
 from electionguard.election import ElectionDescription, InternalElectionDescription, CiphertextElectionContext
 from electionguard.election_builder import ElectionBuilder
-from electionguard.elgamal import ElGamalKeyPair, elgamal_keypair_random, ElementModQ, ElGamalCiphertext
+from electionguard.elgamal import ElGamalKeyPair, elgamal_keypair_random, ElementModQ, ElGamalCiphertext, elgamal_add
 from electionguard.ballot import PlaintextBallot, CiphertextBallot, CiphertextBallotContest, CiphertextBallotSelection, PlaintextBallotContest, \
     PlaintextBallotSelection
 from electionguard.encrypt import EncryptionDevice, EncryptionMediator, contest_from
@@ -18,6 +18,7 @@ from electionguard.hash import hash_elems
 from electionguard.nonces import Nonces
 from electionguard.utils import get_optional, get_or_else_optional_func
 from electionguard.group import Q, ElementModP, ElementModQ, int_to_q_unchecked
+from electionguard.logs import log_warning
 
 """
 Helper functions for holding a quick election. The functions mainly correspond
@@ -208,19 +209,41 @@ def tally(store: BallotStore, metadata: InternalElectionDescription, context: Ci
     Should later be replaced with the proper tallying done by multiple trustees
     :return: Election results
     """
+
+    validateBallots(store, keypair)
+
     tally = tally_ballots(store, metadata, context)
     decrypted_tallies = _decrypt_with_secret(tally, keypair.secret_key)
 
     return decrypted_tallies
 
 
+def validateBallots(store: BallotStore, keypair: ElGamalKeyPair):
+    for ballot in store:
+        if ballot.state != BallotBoxState.CAST:
+            continue
+        # iterate through the contests and elgamal add
+        for contest in ballot.contests:
+
+            messages: [ElGamalCiphertext] = []
+            for selection in contest.ballot_selections:
+                messages.append(selection.message)
+
+            acc: ElGamalCiphertext = elgamal_add(*messages)
+            print('decryption')
+            selection_sum = acc.decrypt(keypair.secret_key)
+
+            if selection_sum > 1:
+                log_warning(
+                    f"ballot {ballot.object_id} has a value greater than one for some candidates"
+                )
+                return False
+
+    return True
+
+
 def publickey(keypair: ElGamalKeyPair) -> int:
     return keypair.public_key.to_int()
-
-
-# TODO: Might delete later, idk
-def secretkey(keypair: ElGamalKeyPair) -> int:
-    return keypair.secret_key.to_int()
 
 
 def ballot_from_json(ballot: dict) -> PlaintextBallot:
